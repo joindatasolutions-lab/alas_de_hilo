@@ -163,6 +163,32 @@ function renderDrawerCart() {
 }
 
 /******************************
+ * NAVEGACIÓN ENTRE VISTAS
+ ******************************/
+function show(id) {
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// Botón CONTINUAR → va al formulario
+document.getElementById("btnContinuarPedido").onclick = () => {
+  if (state.cart.length === 0) {
+    Swal.fire("Tu carrito está vacío", "Agrega productos antes de continuar.", "warning");
+    return;
+  }
+
+  const resumen = state.cart.map(p => `${p.qty}× ${p.nombre} (Talla ${p.talla})`).join(" | ");
+  const subtotal = state.cart.reduce((a, b) => a + b.precio * b.qty, 0);
+
+  document.getElementById("resumenProducto").textContent =
+    `🛍 ${resumen} — Subtotal: $${fmtCOP(subtotal)}`;
+
+  show("viewForm");
+  document.getElementById("drawerCarrito").classList.remove("open");
+};
+
+
+/******************************
  * INTEGRACIONES (para uso posterior)
  ******************************/
 // 🔹 Generar referencia única para Wompi
