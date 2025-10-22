@@ -15,7 +15,6 @@ El sistema está conectado con **Google Sheets** para registrar las transaccione
 
 ## 📦 Estructura
 📁 alas_de_hilo/
-┣ 📂 docs/ → Contendrá los archivos HTML, CSS y JS del sitio
 ┣ 📜 index.html → Página principal del catálogo
 ┣ 📜 script.js → Lógica del cliente y pagos
 ┣ 📜 style.css → Estilos del sitio
