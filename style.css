@@ -1,4 +1,3 @@
-/* ======= FUENTES Y BASE ======= */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500&display=swap');
 
 body {
@@ -6,7 +5,6 @@ body {
   margin: 0;
   background-color: #fffaf5;
   color: #333;
-  scroll-behavior: smooth;
 }
 
 /* ======= ENCABEZADO ======= */
@@ -20,7 +18,6 @@ header {
 
 .logo {
   width: 110px;
-  height: auto;
   display: block;
   margin: 0 auto 12px;
   border-radius: 10px;
@@ -31,13 +28,11 @@ header h1 {
   font-family: "Playfair Display", serif;
   color: #a26d5b;
   font-size: 2rem;
-  letter-spacing: 1px;
 }
 
 header p {
   color: #7b5a47;
   font-style: italic;
-  margin-top: 0.3rem;
   font-size: 1rem;
 }
 
@@ -52,16 +47,14 @@ header p {
   padding: 0 20px;
 }
 
-/* ======= PRODUCTO (CARD) ======= */
+/* ======= PRODUCTO ======= */
 .producto {
   background-color: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
   text-align: center;
   width: 270px;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position: relative;
 }
 
 .producto:hover {
@@ -73,36 +66,21 @@ header p {
   width: 100%;
   height: 230px;
   object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.producto:hover img {
-  transform: scale(1.04);
+  border-radius: 16px 16px 0 0;
 }
 
 .producto h3 {
   color: #a26d5b;
   margin: 0.8rem 0 0.2rem;
-  font-size: 1.05rem;
-}
-
-.producto p {
-  margin: 0.25rem 0;
-  color: #555;
 }
 
 .precio {
   font-weight: 600;
   color: #7b3f2d;
-  font-size: 1.1rem;
 }
 
-/* ======= BOTONES ======= */
 .botones {
-  margin: 0.9rem 0 1.4rem;
-  display: flex;
-  justify-content: center;
-  gap: 0.8rem;
+  margin: 1rem 0;
 }
 
 .btn {
@@ -110,11 +88,9 @@ header p {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
-  text-decoration: none;
   color: white;
+  font-size: 0.9rem;
   transition: all 0.25s ease;
-  position: relative;
 }
 
 .btn-whatsapp {
@@ -125,9 +101,17 @@ header p {
   background-color: #6c63ff;
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+/* ======= SELECT TALLAS ======= */
+.select-talla {
+  width: 70%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #d7bfa8;
+  background-color: #fffaf5;
+  font-size: 0.9rem;
+  color: #5a463b;
+  margin: 8px auto 15px;
+  display: block;
 }
 
 /* ======= FOOTER ======= */
@@ -138,167 +122,45 @@ footer {
   font-size: 0.95rem;
   color: #7b5a47;
   border-top: 3px solid #e3c8b0;
-  margin-top: 50px;
 }
 
-/* ======= RESPONSIVE ======= */
-@media (max-width: 900px) {
-  .producto {
-    width: 45%;
-  }
-}
-
-@media (max-width: 600px) {
-  header h1 {
-    font-size: 1.7rem;
-  }
-
-  .producto {
-    width: 90%;
-  }
-
-  .producto img {
-    height: 200px;
-  }
-
-  .botones {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .btn {
-    width: 80%;
-    margin: 0 auto;
-  }
-}
-
-/* ======= BOTÓN FLOTANTE WHATSAPP ======= */
-.floating-whatsapp {
-  position: fixed;
-  bottom: 18px;
-  right: 18px;
-  background: #25d366;
-  color: white;
-  border-radius: 50%;
-  padding: 16px;
-  font-size: 28px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  z-index: 100;
-}
-
-.floating-whatsapp:hover {
-  transform: scale(1.1);
-}
-
-/* ======= SELECT TALLAS ======= */
-.select-talla {
-  width: 70%;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #d7bfa8;
-  background-color: #fffaf5;
-  font-family: "Poppins", sans-serif;
-  font-size: 0.9rem;
-  color: #5a463b;
-  margin: 8px auto 15px;
-  display: block;
-  transition: border 0.3s ease;
-}
-
-.select-talla:focus {
-  border-color: #a26d5b;
-  outline: none;
-  box-shadow: 0 0 5px rgba(162, 109, 91, 0.4);
-}
-
-.talla-label {
-  font-size: 0.85rem;
-  color: #7b5a47;
-}
-
-.oculto {
-  display: none !important;
-}
-
-/* ===== MODAL ===== */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-.modal-content {
-  background: #fffaf5;
-  padding: 2rem;
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  width: 90%;
-  max-width: 400px;
-  text-align: left;
-}
-
-.modal-content h2 {
-  color: #a26d5b;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.modal-content label {
-  display: block;
-  font-size: 0.9rem;
-  color: #7b5a47;
-  margin-top: 0.8rem;
-}
-
-.modal-content input {
-  width: 100%;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #d7bfa8;
-  background-color: #fffaf5;
-  margin-top: 0.3rem;
-}
-
-.botones-form {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-}
-
-.btn-cancelar {
-  background-color: #ccc;
-  color: #333;
-}
-
-/* ======= CARRITO ======= */
+/* ======= CARRITO DRAWER ======= */
 .carrito {
   position: fixed;
   top: 0;
-  right: 0;
+  right: -360px;
   width: 320px;
   height: 100%;
   background: #fffaf5;
   box-shadow: -4px 0 10px rgba(0,0,0,0.1);
   padding: 20px;
-  transition: transform 0.3s ease;
+  transition: right 0.3s ease;
   overflow-y: auto;
   z-index: 1000;
 }
-.carrito.oculto {
-  transform: translateX(100%);
+.carrito.mostrar {
+  right: 0;
 }
-.carrito h2 {
-  color: #a26d5b;
-  text-align: center;
+
+/* ======= BOTÓN FLOTANTE ======= */
+.boton-flotante {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #a26d5b;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 18px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: background 0.3s ease;
+  z-index: 1100;
+}
+
+.boton-flotante:hover {
+  background-color: #8d5b4d;
 }
 
 /* ======= MODAL ======= */
@@ -308,15 +170,13 @@ footer {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
+  background: rgba(0,0,0,0.6);
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 2000;
 }
-.modal.oculto {
-  display: none;
-}
+
 .modal-contenido {
   background: white;
   padding: 25px;
@@ -325,11 +185,7 @@ footer {
   max-width: 400px;
   text-align: center;
 }
-.modal input {
-  display: block;
-  width: 100%;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #d7bfa8;
+
+.oculto {
+  display: none !important;
 }

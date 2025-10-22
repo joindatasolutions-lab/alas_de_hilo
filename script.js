@@ -1,13 +1,13 @@
 // ========= CONFIGURACIÓN =========
 const WHATSAPP_NUMERO = "573332571225";
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyQzNwHdgGCSGz5dyIHHTn0SNwL0SbIfj_yRW5QXYKid9DJJFLj_djxDX-TGxBockui/exec";
 const CATALOGO = document.querySelector(".catalogo");
-const MODAL = document.getElementById("formulario-compra");
-const FORM = document.getElementById("form-datos");
-const BTN_CERRAR = document.getElementById("cerrar-modal");
+const listaCarrito = document.getElementById("lista-carrito");
+const totalTexto = document.getElementById("total");
+const btnPagar = document.getElementById("btn-pagar");
+const modal = document.getElementById("formulario-modal");
+const form = document.getElementById("form-datos");
+const cerrarModal = document.getElementById("cerrar-modal");
 
-// ========= VARIABLES GLOBALES =========
-let productoSeleccionado = null;
 let carrito = [];
 
 // ========= CARGAR PRODUCTOS =========
@@ -18,11 +18,9 @@ async function cargarProductos() {
   productos.forEach((p) => {
     const card = document.createElement("div");
     card.classList.add("producto");
-    card.dataset.id = p.id;
     card.dataset.nombre = p.nombre;
     card.dataset.precio = p.precio;
 
-    // Generar tallas individuales
     let opcionesTallas = "";
     if (p.tallas.includes("a")) {
       const [inicio, fin] = p.tallas.match(/\d+/g).map(Number);
@@ -37,8 +35,8 @@ async function cargarProductos() {
       <img src="${p.imagen}" alt="${p.nombre}">
       <h3>${p.nombre}</h3>
       <p class="precio">$${p.precio.toLocaleString()}</p>
-      <label for="talla-${p.id}" class="talla-label">Selecciona talla:</label>
-      <select id="talla-${p.id}" class="select-talla">
+      <label class="talla-label">Selecciona talla:</label>
+      <select class="select-talla">
         <option value="">Selecciona...</option>
         ${opcionesTallas}
       </select>
@@ -46,7 +44,6 @@ async function cargarProductos() {
         <button class="btn btn-whatsapp">🛍️ Agregar al carrito</button>
       </div>
     `;
-
     CATALOGO.appendChild(card);
   });
 
@@ -55,7 +52,6 @@ async function cargarProductos() {
 
 // ========= EVENTOS =========
 function agregarEventos() {
-  // Evento agregar al carrito
   document.querySelectorAll(".btn-whatsapp").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const producto = e.target.closest(".producto");
@@ -68,28 +64,18 @@ function agregarEventos() {
         return;
       }
 
-      const productoCarrito = { nombre, precio, talla };
-      carrito.push(productoCarrito);
+      carrito.push({ nombre, precio, talla });
       renderizarCarrito();
-
-      alert(`${nombre} (talla ${talla}) agregado al carrito 🧺`);
     });
   });
 }
 
 // ========= CARRITO =========
-const listaCarrito = document.getElementById("lista-carrito");
-const totalTexto = document.getElementById("total");
-const btnPagar = document.getElementById("btn-pagar");
-const modal = document.getElementById("formulario-modal");
-const form = document.getElementById("form-datos");
-const cerrarModal = document.getElementById("cerrar-modal");
-
 function renderizarCarrito() {
   listaCarrito.innerHTML = "";
   let total = 0;
 
-  carrito.forEach((p, index) => {
+  carrito.forEach((p) => {
     const li = document.createElement("li");
     li.textContent = `${p.nombre} (Talla ${p.talla}) - $${p.precio.toLocaleString()}`;
     listaCarrito.appendChild(li);
@@ -98,13 +84,11 @@ function renderizarCarrito() {
 
   totalTexto.textContent = `Total: $${total.toLocaleString()}`;
   btnPagar.disabled = carrito.length === 0;
+  actualizarContadorCarrito();
 }
 
 // ========= FORMULARIO =========
-btnPagar.addEventListener("click", () => {
-  modal.classList.remove("oculto");
-});
-
+btnPagar.addEventListener("click", () => modal.classList.remove("oculto"));
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const nombre = document.getElementById("nombre").value;
@@ -112,16 +96,24 @@ form.addEventListener("submit", (e) => {
   const direccion = document.getElementById("direccion").value;
 
   alert(`Gracias ${nombre}! Tu pedido será enviado a ${direccion}. Nos comunicaremos al ${telefono}.`);
-
-  // Vaciar carrito tras confirmar
   carrito = [];
   renderizarCarrito();
   modal.classList.add("oculto");
 });
+cerrarModal.addEventListener("click", () => modal.classList.add("oculto"));
 
-cerrarModal.addEventListener("click", () => {
-  modal.classList.add("oculto");
+// ========= BOTÓN FLOTANTE Y DRAWER =========
+const btnCarrito = document.getElementById("btn-carrito");
+const carritoDrawer = document.getElementById("carrito");
+const contadorCarrito = document.getElementById("contador-carrito");
+
+btnCarrito.addEventListener("click", () => {
+  carritoDrawer.classList.toggle("mostrar");
 });
+
+function actualizarContadorCarrito() {
+  contadorCarrito.textContent = carrito.length;
+}
 
 // ========= INICIALIZAR =========
 cargarProductos();
