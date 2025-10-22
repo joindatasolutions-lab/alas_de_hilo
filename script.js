@@ -1,3 +1,4 @@
+// ========= CONFIGURACIÓN =========
 const WHATSAPP_NUMERO = "573332571225";
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyQzNwHdgGCSGz5dyIHHTn0SNwL0SbIfj_yRW5QXYKid9DJJFLj_djxDX-TGxBockui/exec";
 const CATALOGO = document.querySelector(".catalogo");
@@ -5,9 +6,11 @@ const MODAL = document.getElementById("formulario-compra");
 const FORM = document.getElementById("form-datos");
 const BTN_CERRAR = document.getElementById("cerrar-modal");
 
+// ========= VARIABLES GLOBALES =========
 let productoSeleccionado = null;
+let carrito = [];
 
-// ========== CARGAR PRODUCTOS ==========
+// ========= CARGAR PRODUCTOS =========
 async function cargarProductos() {
   const response = await fetch("productos.json");
   const productos = await response.json();
@@ -40,8 +43,7 @@ async function cargarProductos() {
         ${opcionesTallas}
       </select>
       <div class="botones">
-        <button class="btn btn-whatsapp">🛍️ WhatsApp</button>
-        <button class="btn btn-wompi oculto">💳 Pagar con Wompi</button>
+        <button class="btn btn-whatsapp">🛍️ Agregar al carrito</button>
       </div>
     `;
 
@@ -51,60 +53,75 @@ async function cargarProductos() {
   agregarEventos();
 }
 
-// ========== EVENTOS ==========
+// ========= EVENTOS =========
 function agregarEventos() {
-  document.querySelectorAll(".select-talla").forEach((select) => {
-    select.addEventListener("change", (e) => {
-      const producto = e.target.closest(".producto");
-      const botonPago = producto.querySelector(".btn-wompi");
-      if (e.target.value !== "") botonPago.classList.remove("oculto");
-    });
-  });
-
+  // Evento agregar al carrito
   document.querySelectorAll(".btn-whatsapp").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const producto = e.target.closest(".producto");
       const nombre = producto.dataset.nombre;
-      const precio = producto.dataset.precio;
+      const precio = parseInt(producto.dataset.precio);
       const talla = producto.querySelector(".select-talla").value;
-      const mensaje = `Hola! Quiero hacer un pedido de ${nombre} (talla ${talla}) por $${precio}.`;
-      window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, "_blank");
+
+      if (!talla) {
+        alert("Por favor selecciona una talla antes de agregar al carrito.");
+        return;
+      }
+
+      const productoCarrito = { nombre, precio, talla };
+      carrito.push(productoCarrito);
+      renderizarCarrito();
+
+      alert(`${nombre} (talla ${talla}) agregado al carrito 🧺`);
     });
-  });
-
-  document.querySelectorAll(".btn-wompi").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      productoSeleccionado = e.target.closest(".producto");
-      MODAL.style.display = "flex";
-    });
-  });
-
-  BTN_CERRAR.addEventListener("click", () => {
-    MODAL.style.display = "none";
-    FORM.reset();
-  });
-
-  FORM.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const id = productoSeleccionado.dataset.id;
-    const precio = parseInt(productoSeleccionado.dataset.precio);
-    const referencia = `pedido_${Date.now()}_${id}`;
-
-    const nombre = document.getElementById("nombre").value;
-    const telefono = document.getElementById("telefono").value;
-    const direccion = document.getElementById("direccion").value;
-
-    alert(`Datos recibidos ✅\n\nCliente: ${nombre}\nTeléfono: ${telefono}\nDirección: ${direccion}`);
-
-    try {
-      const response = await fetch(`${BACKEND_URL}?reference=${referencia}&amount=${precio}`);
-      const wompiUrl = await response.text();
-      window.location.href = wompiUrl;
-    } catch (err) {
-      alert("Error generando el link de pago. Intenta nuevamente.");
-    }
   });
 }
 
-cargarProductos();
+// ========= CARRITO =========
+const listaCarrito = document.getElementById("lista-carrito");
+const totalTexto = document.getElementById("total");
+const btnPagar = document.getElementById("btn-pagar");
+const modal = document.getElementById("formulario-modal");
+const form = document.getElementById("form-datos");
+const cerrarModal = document.getElementById("cerrar-modal");
 
+function renderizarCarrito() {
+  listaCarrito.innerHTML = "";
+  let total = 0;
+
+  carrito.forEach((p, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${p.nombre} (Talla ${p.talla}) - $${p.precio.toLocaleString()}`;
+    listaCarrito.appendChild(li);
+    total += p.precio;
+  });
+
+  totalTexto.textContent = `Total: $${total.toLocaleString()}`;
+  btnPagar.disabled = carrito.length === 0;
+}
+
+// ========= FORMULARIO =========
+btnPagar.addEventListener("click", () => {
+  modal.classList.remove("oculto");
+});
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const nombre = document.getElementById("nombre").value;
+  const telefono = document.getElementById("telefono").value;
+  const direccion = document.getElementById("direccion").value;
+
+  alert(`Gracias ${nombre}! Tu pedido será enviado a ${direccion}. Nos comunicaremos al ${telefono}.`);
+
+  // Vaciar carrito tras confirmar
+  carrito = [];
+  renderizarCarrito();
+  modal.classList.add("oculto");
+});
+
+cerrarModal.addEventListener("click", () => {
+  modal.classList.add("oculto");
+});
+
+// ========= INICIALIZAR =========
+cargarProductos();

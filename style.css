@@ -278,3 +278,58 @@ footer {
   background-color: #ccc;
   color: #333;
 }
+
+/* ======= CARRITO ======= */
+.carrito {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  background: #fffaf5;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  z-index: 1000;
+}
+.carrito.oculto {
+  transform: translateX(100%);
+}
+.carrito h2 {
+  color: #a26d5b;
+  text-align: center;
+}
+
+/* ======= MODAL ======= */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.modal.oculto {
+  display: none;
+}
+.modal-contenido {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+.modal input {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d7bfa8;
+}
