@@ -19,6 +19,30 @@
   <footer>
     <p>© 2025 Alas de Hilos · Hecho con ♥ por Join Data Solutions</p>
   </footer>
+  <!-- FORMULARIO DE COMPRA (MODAL) -->
+  <div id="formulario-compra" class="modal">
+    <div class="modal-content">
+      <h2>Datos de envío</h2>
+      <form id="form-datos">
+        <label>Cedula:</label>
+        <input type="text" id="cedula" required>
+
+        <label>Nombre completo:</label>
+        <input type="text" id="nombre" required>
+
+        <label>Teléfono:</label>
+        <input type="tel" id="telefono" required>
+
+        <label>Dirección:</label>
+        <input type="text" id="direccion" required>
+
+        <div class="botones-form">
+          <button type="submit" class="btn btn-wompi">💳 Proceder al pago</button>
+          <button type="button" id="cerrar-modal" class="btn btn-cancelar">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
