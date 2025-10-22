@@ -48,5 +48,43 @@
 
   <!-- === SCRIPT PRINCIPAL === -->
   <script src="script.js"></script>
+  <!-- === FORMULARIO DE PEDIDO === -->
+  <section id="viewForm" class="view">
+    <form id="pedidoForm">
+      <div class="pedido-summary" id="resumenProducto">
+        🛍 Tu pedido
+      </div>
+
+      <h3>Datos del cliente</h3>
+      <div class="grid">
+        <div>
+          <label>Nombre completo</label>
+          <input type="text" id="nombreCliente" placeholder="Escribe tu nombre completo" required>
+        </div>
+        <div>
+          <label>Teléfono</label>
+          <input type="tel" id="telefonoCliente" placeholder="Ej: 3001234567" required>
+        </div>
+      </div>
+
+      <h3>Entrega</h3>
+      <div class="grid">
+        <div>
+          <label>Dirección de entrega</label>
+          <input type="text" id="direccionCliente" placeholder="Ej: Calle 123 #45-67" required>
+        </div>
+        <div>
+          <label>Barrio</label>
+          <input type="text" id="barrioCliente" placeholder="Ej: Miramar, Altos del Limón" required>
+        </div>
+      </div>
+
+      <h3>Confirmación</h3>
+      <div class="actions">
+        <button type="button" id="btnVolver" class="btn-outline">Regresar</button>
+        <button type="submit" id="btnConfirmarPedido" class="btn-primary">Confirmar pedido</button>
+      </div>
+    </form>
+  </section>
 </body>
 </html>
