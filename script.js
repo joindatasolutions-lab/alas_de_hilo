@@ -20,11 +20,22 @@ async function cargarProductos() {
       card.dataset.nombre = p.nombre;
       card.dataset.precio = p.precio;
 
+      let opcionesTallas = "";
+      if (p.tallas.includes("a")) {
+        const [inicio, fin] = p.tallas.match(/\d+/g).map(Number);
+        for (let i = inicio; i <= fin; i++) {
+          opcionesTallas += `<option value="${i}">${i}</option>`;
+        }
+      } else {
+        opcionesTallas = `<option value="Única">${p.tallas}</option>`;
+      }
+
       card.innerHTML = `
         <img src="${p.imagen}" alt="${p.nombre}">
         <h3>${p.nombre}</h3>
         <p class="precio">$${p.precio.toLocaleString()}</p>
-        <p>Tallas: ${p.tallas}</p>
+        <label for="talla-${p.id}" class="talla-label">Selecciona talla:</label>
+        <select id="talla-${p.id}" class="select-talla">${opcionesTallas}</select>
         <div class="botones">
           <button class="btn btn-whatsapp">🛍️ WhatsApp</button>
           <button class="btn btn-wompi">💳 Pagar con Wompi</button>
@@ -57,7 +68,9 @@ function agregarEventos() {
       const producto = e.target.closest(".producto");
       const nombre = producto.dataset.nombre;
       const precio = producto.dataset.precio;
-      const mensaje = `Hola! Quiero hacer un pedido de ${nombre} ($${precio}).`;
+      const talla = producto.querySelector(".select-talla").value;
+      const mensaje = `Hola! Quiero hacer un pedido de ${nombre} (talla ${talla}) por $${precio}.`;
+
       window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, "_blank");
     });
   });

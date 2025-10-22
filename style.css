@@ -191,3 +191,29 @@ footer {
 .floating-whatsapp:hover {
   transform: scale(1.1);
 }
+
+/* ======= SELECT TALLAS ======= */
+.select-talla {
+  width: 70%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #d7bfa8;
+  background-color: #fffaf5;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  color: #5a463b;
+  margin: 8px auto 15px;
+  display: block;
+  transition: border 0.3s ease;
+}
+
+.select-talla:focus {
+  border-color: #a26d5b;
+  outline: none;
+  box-shadow: 0 0 5px rgba(162, 109, 91, 0.4);
+}
+
+.talla-label {
+  font-size: 0.85rem;
+  color: #7b5a47;
+}
