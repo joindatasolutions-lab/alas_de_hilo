@@ -1,0 +1,118 @@
+.logo {
+  width: 100px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px auto;
+  border-radius: 10px;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  background-color: #fffaf5;
+  color: #333;
+}
+
+header {
+  background-color: #f6e5dc;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  border-bottom: 3px solid #e3c8b0;
+}
+
+header h1 {
+  margin: 0;
+  font-family: "Playfair Display", serif;
+  color: #a26d5b;
+  font-size: 1.8rem;
+}
+
+header p {
+  color: #7b5a47;
+  font-style: italic;
+  margin-top: 0.3rem;
+}
+
+.catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.producto {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.producto:hover {
+  transform: scale(1.02);
+}
+
+.producto img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+.producto h3 {
+  color: #a26d5b;
+  margin: 0.8rem 0 0.2rem;
+}
+
+.producto p {
+  margin: 0.2rem 0;
+  color: #555;
+}
+
+.precio {
+  font-weight: bold;
+  color: #7b3f2d;
+}
+
+.botones {
+  margin: 0.8rem 0 1.2rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+}
+
+.btn {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: white;
+}
+
+.btn-whatsapp {
+  background-color: #25d366;
+}
+
+.btn-wompi {
+  background-color: #6c63ff;
+}
+
+footer {
+  text-align: center;
+  background-color: #f6e5dc;
+  padding: 1.5rem 1rem;
+  font-size: 0.9rem;
+  color: #7b5a47;
+  border-top: 3px solid #e3c8b0;
+}
+
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+  .producto img {
+    height: 200px;
+  }
+}

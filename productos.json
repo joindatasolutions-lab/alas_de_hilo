@@ -1,0 +1,65 @@
+[
+  {
+    "id": "P001",
+    "nombre": "Sandalias crochet Edrielle",
+    "precio": 130000,
+    "tallas": "23 a 32",
+    "imagen": "images/sandalias-edrielle.jpg"
+  },
+  {
+    "id": "P002",
+    "nombre": "Alpargatas Anjana",
+    "precio": 130000,
+    "tallas": "23 a 32",
+    "imagen": "images/alpargatas-anjana-1.jpg"
+  },
+  {
+    "id": "P003",
+    "nombre": "Alpargatas Anjana",
+    "precio": 130000,
+    "tallas": "23 a 32",
+    "imagen": "images/alpargatas-anjana-2.jpg"
+  },
+  {
+    "id": "P004",
+    "nombre": "Alpargatas Ari Lila",
+    "precio": 130000,
+    "tallas": "23 a 26",
+    "imagen": "images/alpargatas-ari-lila-1.jpg"
+  },
+   {
+    "id": "P005",
+    "nombre": "Alpargatas Ari Lila",
+    "precio": 130000,
+    "tallas": "23 a 26",
+    "imagen": "images/alpargatas-ari-lila-2.jpg"
+  },
+  {
+    "id": "P006",
+    "nombre": "Alpargatas Elisa",
+    "precio": 140000,
+    "tallas": "28 a 33",
+    "imagen": "images/alpargatas-elisa.jpg"
+  },
+  {
+    "id": "P007",
+    "nombre": "Alpargatas Luciana",
+    "precio": 130000,
+    "tallas": "25 a 33 (entrega en 15 días)",
+    "imagen": "images/alpargatas-luciana.jpg"
+  },
+  {
+    "id": "P008",
+    "nombre": "Sandalias Stella",
+    "precio": 90000,
+    "tallas": "26 a 33",
+    "imagen": "images/sandalias-stella.jpg"
+  },
+  {
+    "id": "P009",
+    "nombre": "Cordones alpargatas",
+    "precio": 5000,
+    "tallas": "Colores surtidos",
+    "imagen": "images/cordones-alpargatas.jpg"
+  }
+]
