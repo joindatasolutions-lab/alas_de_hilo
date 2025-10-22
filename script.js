@@ -1,147 +1,90 @@
-// ========= CONFIGURACIÓN =========
-const WHATSAPP_NUMERO = "573332571225";
-const CATALOGO = document.querySelector(".catalogo");
-const listaCarrito = document.getElementById("lista-carrito");
-const totalTexto = document.getElementById("total");
-const btnPagar = document.getElementById("btn-pagar");
-const modal = document.getElementById("formulario-modal");
-const form = document.getElementById("form-datos");
-const cerrarModal = document.getElementById("cerrar-modal");
+// === CONFIGURACIÓN ===
+const WHATSAPP_NUMERO = "573332571225"; // número de WhatsApp
+const WOMPI_BACKEND = "https://script.google.com/macros/s/AKfycbyQzNwHdgGCSGz5dyIHHTn0SNwL0SbIfj_yRW5QXYKid9DJJFLj_djxDX-TGxBockui/exec";
 
-let carrito = [];
+// === ESTADO GLOBAL ===
+const state = { catalogo: [], cart: [] };
+const fmtCOP = v => Number(v || 0).toLocaleString('es-CO');
 
-// ========= CARGAR PRODUCTOS =========
-async function cargarProductos() {
-  const response = await fetch("productos.json");
-  const productos = await response.json();
+// === INICIALIZAR ===
+async function init() {
+  try {
+    const res = await fetch("productos.json");
+    state.catalogo = await res.json();
+    renderCatalog();
+  } catch (error) {
+    console.error("Error cargando catálogo:", error);
+    Swal.fire("Error", "No se pudo cargar el catálogo", "error");
+  }
+}
 
-  productos.forEach((p) => {
+// === RENDERIZAR CATÁLOGO ===
+function renderCatalog() {
+  const cont = document.getElementById("catalogo");
+  cont.innerHTML = "";
+
+  state.catalogo.forEach(prod => {
     const card = document.createElement("div");
-    card.classList.add("producto");
-    card.dataset.nombre = p.nombre;
-    card.dataset.precio = p.precio;
-
-    let opcionesTallas = "";
-    if (p.tallas.includes("a")) {
-      const [inicio, fin] = p.tallas.match(/\d+/g).map(Number);
-      for (let i = inicio; i <= fin; i++) {
-        opcionesTallas += `<option value="${i}">${i}</option>`;
-      }
-    } else {
-      opcionesTallas = `<option value="Única">${p.tallas}</option>`;
-    }
-
+    card.className = "card";
     card.innerHTML = `
-      <img src="${p.imagen}" alt="${p.nombre}">
-      <h3>${p.nombre}</h3>
-      <p class="precio">$${p.precio.toLocaleString()}</p>
-      <label class="talla-label">Selecciona talla:</label>
-      <select class="select-talla">
-        <option value="">Selecciona...</option>
-        ${opcionesTallas}
-      </select>
-      <div class="botones">
-        <button class="btn btn-whatsapp">🛍️ Agregar al carrito</button>
+      <img src="${prod.imagen}" alt="${prod.nombre}">
+      <div class="body">
+        <div class="name">${prod.nombre}</div>
+        <div class="price">$${fmtCOP(prod.precio)}</div>
+        <p style="font-size:0.9rem;color:#666;">${prod.tallas}</p>
+        <div style="display:flex;gap:6px;justify-content:center;margin-top:8px;">
+          <button class="btn-primary" onclick="abrirWhatsApp('${prod.nombre}', ${prod.precio})">🛍️ WhatsApp</button>
+          <button class="btn-outline" onclick="pagarWompi('${prod.id}', ${prod.precio})">💳 Pagar</button>
+        </div>
       </div>
     `;
-    CATALOGO.appendChild(card);
-  });
-
-  agregarEventos();
-}
-
-// ========= EVENTOS =========
-function agregarEventos() {
-  document.querySelectorAll(".btn-whatsapp").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const producto = e.target.closest(".producto");
-      const nombre = producto.dataset.nombre;
-      const precio = parseInt(producto.dataset.precio);
-      const talla = producto.querySelector(".select-talla").value;
-
-      if (!talla) {
-        alert("Por favor selecciona una talla antes de agregar al carrito.");
-        return;
-      }
-
-      carrito.push({ nombre, precio, talla });
-      renderizarCarrito();
-    });
+    cont.appendChild(card);
   });
 }
 
-// ========= CARRITO =========
-function renderizarCarrito() {
-  listaCarrito.innerHTML = "";
-  let total = 0;
-
-  carrito.forEach((p) => {
-    const li = document.createElement("li");
-    li.textContent = `${p.nombre} (Talla ${p.talla}) - $${p.precio.toLocaleString()}`;
-    listaCarrito.appendChild(li);
-    total += p.precio;
-  });
-
-  totalTexto.textContent = `Total: $${total.toLocaleString()}`;
-  btnPagar.disabled = carrito.length === 0;
-  actualizarContadorCarrito();
+// === WHATSAPP ===
+function abrirWhatsApp(nombre, precio) {
+  const mensaje = `Hola 👋 quiero hacer un pedido de *${nombre}* por valor de $${fmtCOP(precio)}.`;
+  window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, "_blank");
 }
 
-// ========= FORMULARIO =========
-btnPagar.addEventListener("click", () => modal.classList.remove("oculto"));
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const nombre = document.getElementById("nombre").value;
-  const telefono = document.getElementById("telefono").value;
-  const direccion = document.getElementById("direccion").value;
-
-  mostrarToast(`${nombre} (talla ${talla}) agregado al carrito 🧺`);
-
-  carrito = [];
-  renderizarCarrito();
-  modal.classList.add("oculto");
-});
-cerrarModal.addEventListener("click", () => modal.classList.add("oculto"));
-
-// ========= BOTÓN FLOTANTE Y DRAWER =========
-const btnCarrito = document.getElementById("btn-carrito");
-const carritoDrawer = document.getElementById("carrito");
-const contadorCarrito = document.getElementById("contador-carrito");
-
-btnCarrito.addEventListener("click", () => {
-  carritoDrawer.classList.toggle("mostrar");
-});
-
-function actualizarContadorCarrito() {
-  contadorCarrito.textContent = carrito.length;
+// === WOMPI ===
+function generarReferencia(id) {
+  return `pedido_${Date.now()}_${id}`;
 }
 
-// ======= TOAST NOTIFICATION =======
-function mostrarToast(mensaje) {
-  const toast = document.getElementById("toast");
-  toast.textContent = mensaje;
-  toast.classList.add("show");
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000);
+async function pagarWompi(id, precio) {
+  const referencia = generarReferencia(id);
+  try {
+    const response = await fetch(`${WOMPI_BACKEND}?reference=${referencia}&amount=${precio}`);
+    const wompiUrl = await response.text();
+    window.location.href = wompiUrl;
+  } catch (err) {
+    Swal.fire("Error", "No se pudo generar el enlace de pago.", "error");
+    console.error("Error al generar URL Wompi:", err);
+  }
 }
 
-// === CONTROL DE DRAWER CARRITO ===
-const btnDrawer = document.getElementById("btnDrawer");
-const drawerCarrito = document.getElementById("drawerCarrito");
-const cerrarDrawer = document.getElementById("cerrarDrawer");
+// === CARRITO (solo visual) ===
+document.getElementById("btnDrawer").onclick = () => {
+  renderDrawerCart();
+  document.getElementById("drawerCarrito").classList.add("open");
+};
+document.getElementById("cerrarDrawer").onclick = () =>
+  document.getElementById("drawerCarrito").classList.remove("open");
+document.getElementById("vaciarCarrito").onclick = () => {
+  state.cart = [];
+  renderDrawerCart();
+};
 
-// Abrir/cerrar carrito al hacer clic en el botón flotante
-btnDrawer.addEventListener("click", () => {
-  drawerCarrito.classList.add("open");
-});
+// === RENDER DRAWER ===
+function renderDrawerCart() {
+  const cont = document.getElementById("cartItemsDrawer");
+  cont.innerHTML = "";
+  const subtotal = state.cart.reduce((a, p) => a + p.precio * p.qty, 0);
+  document.getElementById("subtotalDrawer").textContent = fmtCOP(subtotal);
+  document.getElementById("totalDrawer").textContent = fmtCOP(subtotal);
+}
 
-// Cerrar carrito al presionar la X
-cerrarDrawer.addEventListener("click", () => {
-  drawerCarrito.classList.remove("open");
-});
-
-
-// ========= INICIALIZAR =========
-cargarProductos();
+// === INICIO ===
+init();
