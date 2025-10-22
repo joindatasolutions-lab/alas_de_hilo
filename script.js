@@ -1,12 +1,16 @@
-// === CONFIGURACIÓN ===
-const WHATSAPP_NUMERO = "573332571225"; // número de WhatsApp
-const WOMPI_BACKEND = "https://script.google.com/macros/s/AKfycbyQzNwHdgGCSGz5dyIHHTn0SNwL0SbIfj_yRW5QXYKid9DJJFLj_djxDX-TGxBockui/exec";
-
-// === ESTADO GLOBAL ===
-const state = { catalogo: [], cart: [] };
+/******************************
+ * CONFIGURACIÓN GENERAL
+ ******************************/
 const fmtCOP = v => Number(v || 0).toLocaleString('es-CO');
+const state = { catalogo: [], cart: [] };
 
-// === INICIALIZAR ===
+// Constantes de integración
+const WHATSAPP_NUMERO = "573332571225"; // Número de WhatsApp
+const WOMPI_BACKEND = "https://script.google.com/macros/s/AKfycbyQzNwHdgGCSGz5dyIHHTn0SNwL0SbIfj_yRW5QXYKid9DJJFLj_djxDX-TGxBockui/exec"; // Apps Script para generar link firmado
+
+/******************************
+ * INICIALIZACIÓN
+ ******************************/
 async function init() {
   try {
     const res = await fetch("productos.json");
@@ -18,12 +22,29 @@ async function init() {
   }
 }
 
-// === RENDERIZAR CATÁLOGO ===
+/******************************
+ * RENDERIZAR CATÁLOGO
+ ******************************/
 function renderCatalog() {
   const cont = document.getElementById("catalogo");
   cont.innerHTML = "";
 
   state.catalogo.forEach(prod => {
+    // Convertir texto de tallas ("23 a 32") a lista de opciones
+    let tallas = [];
+    if (typeof prod.tallas === "string") {
+      const match = prod.tallas.match(/(\d+)\s*a\s*(\d+)/);
+      if (match) {
+        const min = parseInt(match[1]);
+        const max = parseInt(match[2]);
+        for (let i = min; i <= max; i++) tallas.push(i);
+      } else {
+        tallas = [prod.tallas];
+      }
+    } else if (Array.isArray(prod.tallas)) {
+      tallas = prod.tallas;
+    }
+
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
@@ -31,41 +52,57 @@ function renderCatalog() {
       <div class="body">
         <div class="name">${prod.nombre}</div>
         <div class="price">$${fmtCOP(prod.precio)}</div>
-        <p style="font-size:0.9rem;color:#666;">${prod.tallas}</p>
-        <div style="display:flex;gap:6px;justify-content:center;margin-top:8px;">
-          <button class="btn-primary" onclick="abrirWhatsApp('${prod.nombre}', ${prod.precio})">🛍️ WhatsApp</button>
-          <button class="btn-outline" onclick="pagarWompi('${prod.id}', ${prod.precio})">💳 Pagar</button>
+        <div style="margin-bottom:10px;">
+          <label style="font-size:0.85rem;color:#666;">Talla:</label>
+          <select id="talla-${prod.id}" class="select-talla">
+            <option value="">Selecciona</option>
+            ${tallas.map(t => `<option value="${t}">${t}</option>`).join("")}
+          </select>
         </div>
+        <button class="btn-add" onclick="addToCart('${prod.id}')">Agregar al carrito</button>
       </div>
     `;
     cont.appendChild(card);
   });
 }
 
-// === WHATSAPP ===
-function abrirWhatsApp(nombre, precio) {
-  const mensaje = `Hola 👋 quiero hacer un pedido de *${nombre}* por valor de $${fmtCOP(precio)}.`;
-  window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, "_blank");
-}
+/******************************
+ * AGREGAR AL CARRITO
+ ******************************/
+function addToCart(id) {
+  const prod = state.catalogo.find(p => p.id === id);
+  if (!prod) return;
 
-// === WOMPI ===
-function generarReferencia(id) {
-  return `pedido_${Date.now()}_${id}`;
-}
+  const select = document.getElementById(`talla-${id}`);
+  const tallaSeleccionada = select.value;
 
-async function pagarWompi(id, precio) {
-  const referencia = generarReferencia(id);
-  try {
-    const response = await fetch(`${WOMPI_BACKEND}?reference=${referencia}&amount=${precio}`);
-    const wompiUrl = await response.text();
-    window.location.href = wompiUrl;
-  } catch (err) {
-    Swal.fire("Error", "No se pudo generar el enlace de pago.", "error");
-    console.error("Error al generar URL Wompi:", err);
+  if (!tallaSeleccionada) {
+    Swal.fire("Selecciona una talla", "Por favor elige una talla antes de agregar al carrito.", "warning");
+    return;
   }
+
+  const existing = state.cart.find(p => p.id === id && p.talla === tallaSeleccionada);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    state.cart.push({ ...prod, talla: tallaSeleccionada, qty: 1 });
+  }
+
+  updateCartCount();
+  renderDrawerCart();
+
+  Swal.fire({
+    title: 'Producto agregado',
+    text: `${prod.nombre} (Talla ${tallaSeleccionada}) añadido al carrito`,
+    icon: 'success',
+    timer: 1000,
+    showConfirmButton: false
+  });
 }
 
-// === CARRITO (solo visual) ===
+/******************************
+ * CARRITO (Drawer)
+ ******************************/
 document.getElementById("btnDrawer").onclick = () => {
   renderDrawerCart();
   document.getElementById("drawerCarrito").classList.add("open");
@@ -75,16 +112,84 @@ document.getElementById("cerrarDrawer").onclick = () =>
 document.getElementById("vaciarCarrito").onclick = () => {
   state.cart = [];
   renderDrawerCart();
+  updateCartCount();
 };
 
-// === RENDER DRAWER ===
+function updateCartCount() {
+  const totalQty = state.cart.reduce((a, b) => a + b.qty, 0);
+  document.getElementById("cartCount").textContent = totalQty;
+}
+
+function changeQty(id, talla, delta) {
+  const item = state.cart.find(p => p.id === id && p.talla === talla);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) {
+    state.cart = state.cart.filter(p => !(p.id === id && p.talla === talla));
+  }
+  updateCartCount();
+  renderDrawerCart();
+}
+
 function renderDrawerCart() {
   const cont = document.getElementById("cartItemsDrawer");
   cont.innerHTML = "";
-  const subtotal = state.cart.reduce((a, p) => a + p.precio * p.qty, 0);
+  let subtotal = 0;
+
+  if (state.cart.length === 0) {
+    cont.innerHTML = `<p style="text-align:center;color:#666;">Tu carrito está vacío 🛒</p>`;
+  } else {
+    state.cart.forEach(p => {
+      const sub = p.precio * p.qty;
+      subtotal += sub;
+      cont.innerHTML += `
+        <li class="cart-item">
+          <div>
+            <div class="name">${p.nombre}</div>
+            <div class="price">$${fmtCOP(p.precio)} c/u — Talla: ${p.talla}</div>
+          </div>
+          <div class="qty">
+            <button onclick="changeQty('${p.id}','${p.talla}', -1)">−</button>
+            <span>${p.qty}</span>
+            <button onclick="changeQty('${p.id}','${p.talla}', 1)">+</button>
+          </div>
+        </li>`;
+    });
+  }
+
+  const total = subtotal;
   document.getElementById("subtotalDrawer").textContent = fmtCOP(subtotal);
-  document.getElementById("totalDrawer").textContent = fmtCOP(subtotal);
+  document.getElementById("totalDrawer").textContent = fmtCOP(total);
 }
 
-// === INICIO ===
+/******************************
+ * INTEGRACIONES (para uso posterior)
+ ******************************/
+// 🔹 Generar referencia única para Wompi
+function generarReferencia(idProducto) {
+  const timestamp = Date.now();
+  return `pedido_${timestamp}_${idProducto}`;
+}
+
+// 🔹 Iniciar pago con Wompi (se usará al confirmar pedido)
+async function iniciarPagoWompi(idProducto, monto) {
+  const referencia = generarReferencia(idProducto);
+  try {
+    const response = await fetch(`${WOMPI_BACKEND}?reference=${referencia}&amount=${monto}`);
+    const wompiUrl = await response.text();
+    window.location.href = wompiUrl;
+  } catch (err) {
+    Swal.fire("Error", "No se pudo generar el enlace de pago.", "error");
+    console.error("Error Wompi:", err);
+  }
+}
+
+// 🔹 Enviar mensaje por WhatsApp (se usará al confirmar pedido)
+function enviarWhatsApp(mensaje) {
+  window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, "_blank");
+}
+
+/******************************
+ * CARGA INICIAL
+ ******************************/
 init();
