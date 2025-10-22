@@ -219,3 +219,42 @@ function enviarWhatsApp(mensaje) {
  * CARGA INICIAL
  ******************************/
 init();
+
+// Botón VOLVER → Regresa al catálogo
+document.getElementById("btnVolver").onclick = () => show("viewCatalog");
+
+// Botón CONFIRMAR PEDIDO → abrir opciones de pago
+document.getElementById("pedidoForm").onsubmit = (e) => {
+  e.preventDefault();
+
+  const nombre = document.getElementById("nombreCliente").value.trim();
+  const telefono = document.getElementById("telefonoCliente").value.trim();
+  const direccion = document.getElementById("direccionCliente").value.trim();
+  const barrio = document.getElementById("barrioCliente").value.trim();
+
+  if (!nombre || !telefono || !direccion || !barrio) {
+    Swal.fire("Completa todos los campos", "Por favor llena los datos del cliente.", "warning");
+    return;
+  }
+
+  const subtotal = state.cart.reduce((a, b) => a + b.precio * b.qty, 0);
+  const mensaje = `🧾 Pedido de ${nombre}\n📞 ${telefono}\n📍 ${direccion}, ${barrio}\n\n` +
+                  state.cart.map(p => `${p.qty}× ${p.nombre} (Talla ${p.talla})`).join("\n") +
+                  `\n\n💰 Total: $${fmtCOP(subtotal)}`;
+
+  Swal.fire({
+    title: "¿Cómo deseas continuar?",
+    text: "Selecciona el método de confirmación de tu pedido:",
+    showCancelButton: true,
+    confirmButtonText: "💳 Pagar con Wompi",
+    cancelButtonText: "📱 Confirmar por WhatsApp",
+    reverseButtons: true
+  }).then(result => {
+    if (result.isConfirmed) {
+      iniciarPagoWompi("pedido", subtotal);
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      enviarWhatsApp(mensaje);
+    }
+  });
+};
+
