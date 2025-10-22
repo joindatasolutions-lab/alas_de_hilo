@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo Alas de Hilos</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      background-color: #fffaf5;
+      color: #333;
+    }
+
+    header {
+      background-color: #f6e5dc;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      border-bottom: 3px solid #e3c8b0;
+    }
+
+    header h1 {
+      margin: 0;
+      font-family: "Playfair Display", serif;
+      color: #a26d5b;
+      font-size: 1.8rem;
+    }
+
+    header p {
+      color: #7b5a47;
+      font-style: italic;
+      margin-top: 0.3rem;
+    }
+
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .producto {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .producto:hover {
+      transform: scale(1.02);
+    }
+
+    .producto img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+    }
+
+    .producto h3 {
+      color: #a26d5b;
+      margin: 0.8rem 0 0.2rem;
+    }
+
+    .producto p {
+      margin: 0.2rem 0;
+      color: #555;
+    }
+
+    .precio {
+      font-weight: bold;
+      color: #7b3f2d;
+    }
+
+    .botones {
+      margin: 0.8rem 0 1.2rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.7rem;
+    }
+
+    .btn {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: white;
+    }
+
+    .btn-whatsapp {
+      background-color: #25d366;
+    }
+
+    .btn-wompi {
+      background-color: #6c63ff;
+    }
+
+    footer {
+      text-align: center;
+      background-color: #f6e5dc;
+      padding: 1.5rem 1rem;
+      font-size: 0.9rem;
+      color: #7b5a47;
+      border-top: 3px solid #e3c8b0;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.5rem;
+      }
+      .producto img {
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Alas de Hilos</h1>
+    <p>Hecho a mano con amor 🧵</p>
+  </header>
+
+  <section class="catalogo">
+    <!-- Ejemplo: cada producto tiene su ID, nombre y precio -->
+    <div class="producto" data-id="P001" data-nombre="Sandalias crochet Edrielle" data-precio="1500">
+      <img src="images/sandalias-edrielle.jpg" alt="Sandalias crochet Edrielle">
+      <h3>Sandalias crochet Edrielle</h3>
+      <p class="precio">$1.500</p>
+      <p>Tallas: 23 a 32</p>
+      <div class="botones">
+        <button class="btn btn-whatsapp">🛍️ WhatsApp</button>
+        <button class="btn btn-wompi">💳 Pagar con Wompi</button>
+      </div>
+    </div>
+
+    <div class="producto" data-id="P002" data-nombre="Alpargatas Anjana" data-precio="1500">
+      <img src="images/alpargatas-anjana.jpg" alt="Alpargatas Anjana">
+      <h3>Alpargatas Anjana</h3>
+      <p class="precio">$1.500</p>
+      <p>Tallas: 23 a 32</p>
+      <div class="botones">
+        <button class="btn btn-whatsapp">🛍️ WhatsApp</button>
+        <button class="btn btn-wompi">💳 Pagar con Wompi</button>
+      </div>
+    </div>
+
+    <div class="producto" data-id="P003" data-nombre="Alpargatas Ari Lila" data-precio="1500">
+      <img src="images/alpargatas-ari-lila.jpg" alt="Alpargatas Ari Lila">
+      <h3>Alpargatas Ari Lila</h3>
+      <p class="precio">$1.500</p>
+      <p>Tallas: 23 a 26</p>
+      <div class="botones">
+        <button class="btn btn-whatsapp">🛍️ WhatsApp</button>
+        <button class="btn btn-wompi">💳 Pagar con Wompi</button>
+      </div>
+    </div>
+
+    <div class="producto" data-id="P004" data-nombre="Alpargatas Elisa" data-precio="1500">
+      <img src="images/alpargatas-elisa.jpg" alt="Alpargatas Elisa">
+      <h3>Alpargatas Elisa</h3>
+      <p class="precio">$1.500</p>
+      <p>Tallas: 28 a 33</p>
+      <div class="botones">
+        <button class="btn btn-whatsapp">🛍️ WhatsApp</button>
+        <button class="btn btn-wompi">💳 Pagar con Wompi</button>
+      </div>
+    </div>
+
+    <div class="producto" data-id="P005" data-nombre="Alpargatas Luciana" data-precio="1500">
+      <img src="images/alpargatas-luciana.jpg" alt="Alpargatas Luciana">
+      <h3>Alpargatas Luciana</h3>
+      <p class="precio">$1.500</p>
+      <p>Tallas: 25 a 33 (entrega en 15 días)</p>
+      <div class="botones">
+        <button class="btn btn-whatsapp">🛍️ WhatsApp</button>
+        <button class="btn btn-wompi">💳 Pagar con Wompi</button>
+      </div>
+    </div>
+
+    <div class="producto" data-id="P006" data-nombre="Sandalias Stella" data-precio="1500">
+      <img src="images/sandalias-stella.jpg" alt="Sandalias Stella">
+      <h3>Sandalias Stella</h3>
+      <p class="precio">$1.500</p>
+      <p>Tallas: 26 a 33</p>
+      <div class="botones">
+        <button class="btn btn-whatsapp">🛍️ WhatsApp</button>
+        <button class="btn btn-wompi">💳 Pagar con Wompi</button>
+      </div>
+    </div>
+
+    <div class="producto" data-id="P007" data-nombre="Cordones alpargatas" data-precio="1500">
+      <img src="images/cordones-alpargatas.jpg" alt="Cordones alpargatas colores surtidos">
+      <h3>Cordones alpargatas</h3>
+      <p class="precio">$1.500</p>
+      <p>Colores surtidos</p>
+      <div class="botones">
+        <button class="btn btn-whatsapp">🛍️ WhatsApp</button>
+        <button class="btn btn-wompi">💳 Pagar con Wompi</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Alas de Hilos · Hecho con ♥ por Join Data Solutions</p>
+  </footer>
+
+<script>
+  /****************************
+   * CONFIGURACIÓN PRINCIPAL
+   ****************************/
+  const WHATSAPP_NUMERO = "573332571225";
+  const BACKEND_URL = "https://script.google.com/macros/s/AKfycbyQzNwHdgGCSGz5dyIHHTn0SNwL0SbIfj_yRW5QXYKid9DJJFLj_djxDX-TGxBockui/exec"; // URL del Apps Script
+
+  /****************************
+   * FUNCIÓN PARA GENERAR REFERENCIA
+   ****************************/
+  function generarReferencia(idProducto) {
+    const timestamp = Date.now();
+    return `pedido_${timestamp}_${idProducto}`;
+  }
+
+  /****************************
+   * BOTÓN WHATSAPP
+   ****************************/
+  document.querySelectorAll(".btn-whatsapp").forEach(boton => {
+    boton.addEventListener("click", e => {
+      const producto = e.target.closest(".producto");
+      const nombre = producto.dataset.nombre;
+      const precio = producto.dataset.precio;
+      const mensaje = `Hola! Quiero hacer un pedido de ${nombre} ($${precio}).`;
+      window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, "_blank");
+    });
+  });
+
+  /****************************
+   * BOTÓN WOMPI (con firma desde Apps Script)
+   ****************************/
+  document.querySelectorAll(".btn-wompi").forEach(boton => {
+    boton.addEventListener("click", async e => {
+      const producto = e.target.closest(".producto");
+      const id = producto.dataset.id;
+      const precio = parseInt(producto.dataset.precio);
+      const referencia = generarReferencia(id);
+
+      try {
+        // Llama al Apps Script para generar la URL firmada
+        const response = await fetch(`${BACKEND_URL}?reference=${referencia}&amount=${precio}`);
+        const wompiUrl = await response.text();
+
+        // Redirige al checkout con la firma ya incluida
+        window.location.href = wompiUrl;
+
+      } catch (err) {
+        alert("Error generando el link de pago. Intenta nuevamente.");
+        console.error("Error al obtener URL firmada:", err);
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,52 +1,173 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo Alas de Hilos</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catalogo Alas De Hilos</title>
+
+  <!-- Fuentes y librerías -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+  <!-- === ENCABEZADO === -->
   <header>
-    <img src="images/alas de hilo logo.jpg" alt="Logo Alas de Hilo" class="logo">
-    <h1>Alas de Hilos</h1>
-    <p>Hecho a mano con amor 🧵</p>
+    <img src="img/alas de hilo logo.jpg" alt="Alas De Hilo Logo">
+    <h2>Alas De Hilos</h2>
   </header>
 
-  <section class="catalogo"></section>
+  <!-- === CATÁLOGO === -->
+  <section id="viewCatalog" class="view active">
+    <div id="catalogo" class="catalogo"></div>
+  </section>
 
-  <!-- Carrito lateral -->
-  <aside id="carrito" class="carrito oculto">
-    <h2>🛒 Carrito</h2>
-    <ul id="lista-carrito"></ul>
-    <p id="total">Total: $0</p>
-    <button id="btn-pagar" class="btn btn-wompi" disabled>💳 Proceder al pago</button>
+  <!-- === DRAWER CARRITO === -->
+  <aside id="drawerCarrito" class="drawer">
+    <div class="drawer-header">
+      <strong>🛍️ Tu carrito</strong>
+      <button id="cerrarDrawer" class="icon-btn">✕</button>
+    </div>
+    <div class="drawer-body">
+      <ul id="cartItemsDrawer" class="cart-list"></ul>
+      <div class="drawer-footer">
+        <div class="subtotal">
+          <p><strong>Subtotal:</strong> $<span id="subtotalDrawer">0</span></p>
+          <p><strong>IVA:</strong> $<span id="ivaDrawer">0</span></p>
+          <p><strong>Domicilio:</strong> $<span id="domicilioDrawer">0</span></p>
+          <h3><strong>Total:</strong> $<span id="totalDrawer">0</span></h3>
+        </div>
+        <div class="drawer-actions">
+          <button id="vaciarCarrito" class="btn-outline">Vaciar</button>
+          <button id="btnPedidoDrawer" class="btn-primary">Continuar</button>
+        </div>
+      </div>
+    </div>
   </aside>
 
-  <!-- Formulario modal -->
-  <div id="formulario-modal" class="modal oculto">
-    <div class="modal-contenido">
-      <h3>Datos de envío</h3>
-      <form id="form-datos">
-        <input type="text" id="nombre" placeholder="Nombre completo" required>
-        <input type="text" id="telefono" placeholder="Teléfono" required>
-        <input type="text" id="direccion" placeholder="Dirección de entrega" required>
-        <button type="submit" class="btn btn-whatsapp">Confirmar pedido</button>
-        <button type="button" id="cerrar-modal" class="btn">Cancelar</button>
-      </form>
-    </div>
-  </div>
+  <!-- === BOTÓN FLOTANTE CARRITO === -->
+  <button id="btnDrawer" class="cart-fab">
+    🛍️ <span id="cartCount">0</span>
+  </button>
 
-  <!-- Botón flotante del carrito -->
-  <button id="btn-carrito" class="boton-flotante">🛍️ <span id="contador-carrito">0</span></button>
+  <!-- === FORMULARIO DE PEDIDO === -->
+  <section id="viewForm" class="view">
+    <form id="pedidoForm">
+      <div class="pedido-summary" id="resumenProducto">🛍 Tu pedido</div>
 
-  <footer>
-    <p>© 2025 Alas de Hilos · Hecho con ♥ por Join Data Solutions</p>
-  </footer>
+      <h3>Datos del Cliente 
+        <span id="badgeCliente" class="badge warn">Nuevo cliente</span>
+      </h3>
 
+      <div class="grid">
+        <div>
+          <label>Tipo de identificación</label>
+          <select id="tipoIdent" required>
+            <option value="CEDULA" selected>Cédula</option>
+            <option value="NIT">NIT</option>
+          </select>
+        </div>
+        <div><label>Identificación</label><input id="identificacion" name="identificacion" required></div>
+        <div><label>Teléfono</label><input id="telefono" name="telefono" required></div>
+        <div><label>Nombre</label><input id="primerNombre" name="primerNombre" required></div>
+        <div><label>Apellido(s)</label><input id="primerApellido" name="primerApellido"></div>
+        <div><label>Email (opcional)</label><input type="email" id="email" name="email"></div>
+      </div>
+
+      <h3>Entrega</h3>
+      <div class="grid">
+        <div><label>Destinatario</label><input id="destinatario" name="destinatario" required></div>
+        <div><label>Teléfono destino</label><input id="telefonoDestino" name="telefonoDestino"></div>
+        <div><label>Dirección</label><input id="direccion" name="direccion" placeholder="Apto, Casa, Oficina" required></div>
+        <div>
+          <label>Barrio</label>
+          <select id="barrio" name="barrio" onchange="actualizarDomicilio()" required></select>
+        </div>
+        </div>
+        <div class="entrega-fecha-hora">
+          <div>
+            <label>Fecha de entrega</label>
+            <input id="fechaEntrega" name="fechaEntrega" type="date" required>
+          </div>
+          <div>
+            <label>Hora de entrega</label>
+            <input id="horaEntrega" name="horaEntrega" type="time" required>
+          </div>
+        </div>
+        <div class="form-group tipo-lugar">
+        <label for="tipoLugar" class="titulo-campo">Tipo de lugar *</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="tipoLugar" value="Casa" required checked>
+            <span>🏠 Casa</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="tipoLugar" value="Edificio" required>
+            <span>🏢 Edificio</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="tipoLugar" value="Conjunto" required>
+            <span>🏡 Conjunto</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="tipoLugar" value="Oficina" required>
+            <span>🏬 Oficina</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="tipoLugar" value="Centro Comercial" required>
+            <span>🏙️ Centro Comercial</span>
+          </label>
+        </div>
+      </div>
+      </div>
+      <h3>Medio de Pago y Mensaje</h3>
+      <div class="grid">
+        <div>
+          <label>Medio de pago</label>
+          <select id="formaPago" name="formaPago" required>
+            <option value="">Selecciona una opción...</option>
+            <option value="TRANSFERENCIA">Transferencia</option>
+            <option value="TARJETA">Tarjeta</option>
+            <option value="LINK">Link</option>
+            <option value="EFECTIVO">Efectivo</option>
+            <option value="CUENTAS POR COBRAR">Cuenta Por Cobrar</option>
+            <option value="CONTRAENTREGA">Pago contra entrega</option>
+          </select>
+        </div>
+        <div class="grid-1">
+          <label>Mensaje</label>
+          <textarea id="mensaje"name="mensaje" placeholder="Escribe un mensaje opcional"></textarea>
+        </div>
+      </div>
+
+      <div class="firma-box">
+        <label>¿Deseas que el mensaje vaya firmado o anónimo?</label>
+        <select id="firmaMensaje" name="firmaMensaje" required>
+          <option value="Firmado" selected>Firmado</option>
+          <option value="Anónimo">Anónimo</option>
+        </select>
+        <div id="campoFirmaWrapper" style="margin-top:10px;">
+          <label for="nombreFirma">Nombre para la firma</label>
+          <input type="text" id="nombreFirma" name="nombreFirma" placeholder="Ej: Con cariño, Laura y Carlos">
+        </div>
+      </div>
+
+      <!-- Campos ocultos -->
+      <input type="hidden" id="domicilio" name="domicilio">
+      <input type="hidden" id="iva" name="iva">
+      <input type="hidden" id="total" name="total">
+
+      <div class="actions">
+        <button type="button" class="btn-outline" id="btnVolver">Regresar</button>
+        <button type="submit" class="btn-primary" id="btnSubmit">Confirmar pedido</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- === SCRIPT PRINCIPAL === -->
   <script src="script.js"></script>
-  <!-- Notificación tipo toast -->
-  <div id="toast" class="toast"></div>
 </body>
 </html>
