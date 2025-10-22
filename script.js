@@ -127,5 +127,21 @@ function mostrarToast(mensaje) {
   }, 3000);
 }
 
+// === CONTROL DE DRAWER CARRITO ===
+const btnDrawer = document.getElementById("btnDrawer");
+const drawerCarrito = document.getElementById("drawerCarrito");
+const cerrarDrawer = document.getElementById("cerrarDrawer");
+
+// Abrir/cerrar carrito al hacer clic en el botón flotante
+btnDrawer.addEventListener("click", () => {
+  drawerCarrito.classList.add("open");
+});
+
+// Cerrar carrito al presionar la X
+cerrarDrawer.addEventListener("click", () => {
+  drawerCarrito.classList.remove("open");
+});
+
+
 // ========= INICIALIZAR =========
 cargarProductos();
