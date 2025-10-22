@@ -189,3 +189,27 @@ footer {
 .oculto {
   display: none !important;
 }
+
+/* ======= TOAST (notificación elegante) ======= */
+.toast {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #a26d5b;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 14px;
+  position: fixed;
+  z-index: 2000;
+  right: 20px;
+  bottom: 30px;
+  font-size: 0.95rem;
+  opacity: 0;
+  transition: opacity 0.5s, bottom 0.5s;
+}
+
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50px;
+}

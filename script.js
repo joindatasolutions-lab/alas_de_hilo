@@ -95,7 +95,8 @@ form.addEventListener("submit", (e) => {
   const telefono = document.getElementById("telefono").value;
   const direccion = document.getElementById("direccion").value;
 
-  alert(`Gracias ${nombre}! Tu pedido será enviado a ${direccion}. Nos comunicaremos al ${telefono}.`);
+  mostrarToast(`${nombre} (talla ${talla}) agregado al carrito 🧺`);
+
   carrito = [];
   renderizarCarrito();
   modal.classList.add("oculto");
@@ -113,6 +114,17 @@ btnCarrito.addEventListener("click", () => {
 
 function actualizarContadorCarrito() {
   contadorCarrito.textContent = carrito.length;
+}
+
+// ======= TOAST NOTIFICATION =======
+function mostrarToast(mensaje) {
+  const toast = document.getElementById("toast");
+  toast.textContent = mensaje;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
 }
 
 // ========= INICIALIZAR =========
