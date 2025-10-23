@@ -237,10 +237,43 @@ document.getElementById("btnConfirmarPedido").onclick = () => {
   Swal.fire("Datos confirmados", "Elige cómo deseas continuar con el pago.", "success");
 };
 
-document.getElementById("btnPagarWompi").onclick = () => {
+document.getElementById("btnPagarWompi").onclick = async () => {
+  const nombre = document.getElementById("nombreCliente").value.trim();
+  const telefono = document.getElementById("telefonoCliente").value.trim();
+  const direccion = document.getElementById("direccionCliente").value.trim();
+  const barrio = document.getElementById("barrioCliente").value.trim();
+
   const total = state.cart.reduce((a, b) => a + b.precio * b.qty, 0);
-  iniciarPagoWompi("pedido", total);
+  const detallePedido = state.cart.map(p => `${p.qty}× ${p.nombre} (Talla ${p.talla})`).join(", ");
+
+  const reference = `pedido_${Date.now()}_${state.cart[0].id}`;
+
+  try {
+    // 1️⃣ Guardar el pedido en la hoja
+    await fetch(WOMPI_BACKEND + "?saveOrder=true", {
+      method: "POST",
+      body: JSON.stringify({
+        reference,
+        nombre,
+        telefono,
+        direccion,
+        barrio,
+        detallePedido,
+        total
+      })
+    });
+
+    // 2️⃣ Redirigir a Wompi
+    const response = await fetch(`${WOMPI_BACKEND}?reference=${reference}&amount=${total}`);
+    const wompiUrl = await response.text();
+    window.location.href = wompiUrl;
+
+  } catch (error) {
+    Swal.fire("Error", "No se pudo registrar el pedido o generar el pago.", "error");
+    console.error("Error:", error);
+  }
 };
+
 
 document.getElementById("btnConfirmarWhatsapp").onclick = () => {
   const nombre = document.getElementById("nombreCliente").value.trim();
