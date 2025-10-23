@@ -491,6 +491,30 @@ textarea {
   outline: none;
 }
 
+#metodosPago {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+#btnPagarWompi {
+  background: #2a8ef8; /* azul Wompi */
+  color: #fff;
+}
+
+#btnPagarWompi:hover {
+  background: #1b6fd1;
+}
+
+#btnConfirmarWhatsapp {
+  background: #25D366; /* verde WhatsApp */
+  color: #fff;
+  border: none;
+}
+
+#btnConfirmarWhatsapp:hover {
+  background: #1da851;
+}
 
 
 /* === RESPONSIVE === */
