@@ -8,28 +8,28 @@
   },
   {
     "id": "P002",
-    "nombre": "Alpargatas Anjana",
+    "nombre": "Alpargatas Anjana 1",
     "precio": 130000,
     "tallas": "23 a 32",
     "imagen": "images/alpargatas-anjana-1.jpeg"
   },
   {
     "id": "P003",
-    "nombre": "Alpargatas Anjana",
+    "nombre": "Alpargatas Anjana 2",
     "precio": 130000,
     "tallas": "23 a 32",
     "imagen": "images/alpargatas-anjana-2.jpeg"
   },
   {
     "id": "P004",
-    "nombre": "Alpargatas Ari Lila",
+    "nombre": "Alpargatas Ari Lila 1",
     "precio": 130000,
     "tallas": "23 a 26",
     "imagen": "images/alpargatas-ari-lila-1.jpeg"
   },
    {
     "id": "P005",
-    "nombre": "Alpargatas Ari Lila",
+    "nombre": "Alpargatas Ari Lila 2",
     "precio": 130000,
     "tallas": "23 a 26",
     "imagen": "images/alpargatas-ari-lila-2.jpeg"
