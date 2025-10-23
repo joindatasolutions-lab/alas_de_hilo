@@ -95,7 +95,7 @@ function addToCart(id) {
     title: 'Producto agregado',
     text: `${prod.nombre} (Talla ${tallaSeleccionada}) añadido al carrito`,
     icon: 'success',
-    timer: 1000,
+    timer: 2000,
     showConfirmButton: false
   });
 }
