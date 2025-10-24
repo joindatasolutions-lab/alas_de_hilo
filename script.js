@@ -250,6 +250,61 @@ document.getElementById("btnConfirmarWhatsapp").onclick = () => {
   enviarWhatsApp(mensaje, telefono.startsWith("57") ? telefono : "57" + telefono);
 };
 
+/******************************
+ * BOTÓN “CONTINUAR” DEL CARRITO
+ ******************************/
+document.getElementById("btnContinuarPedido").onclick = () => {
+  if (state.cart.length === 0) {
+    Swal.fire("Carrito vacío", "Agrega productos antes de continuar.", "warning");
+    return;
+  }
+
+  // Cierra el carrito
+  document.getElementById("drawerCarrito").classList.remove("open");
+
+  // Cambia de vista: catálogo → formulario
+  document.getElementById("viewCatalog").classList.remove("active");
+  document.getElementById("viewForm").classList.add("active");
+
+  // Muestra el resumen del pedido
+  const resumen = state.cart
+    .map(p => `${p.qty}× ${p.nombre} (Talla ${p.talla}) — $${fmtCOP(p.precio * p.qty)}`)
+    .join("<br>");
+  document.getElementById("resumenProducto").innerHTML = `
+    <h4>🛍 Tu pedido</h4>
+    ${resumen}
+    <p><strong>Total:</strong> $${fmtCOP(state.cart.reduce((a, b) => a + b.precio * b.qty, 0))}</p>
+  `;
+};
+
+/******************************
+ * BOTÓN “REGRESAR” AL CATÁLOGO
+ ******************************/
+document.getElementById("btnVolver").onclick = () => {
+  document.getElementById("viewForm").classList.remove("active");
+  document.getElementById("viewCatalog").classList.add("active");
+};
+
+/******************************
+ * BOTÓN “CONFIRMAR PEDIDO”
+ ******************************/
+document.getElementById("btnConfirmarPedido").onclick = () => {
+  // Verifica campos
+  const nombre = document.getElementById("nombreCliente").value.trim();
+  const telefono = document.getElementById("telefonoCliente").value.trim();
+  const direccion = document.getElementById("direccionCliente").value.trim();
+  const barrio = document.getElementById("barrioCliente").value.trim();
+
+  if (!nombre || !telefono || !direccion || !barrio) {
+    Swal.fire("Campos incompletos", "Completa todos los datos antes de continuar.", "warning");
+    return;
+  }
+
+  // Muestra los métodos de pago
+  document.getElementById("metodosPago").style.display = "flex";
+  Swal.fire("Perfecto", "Ya puedes elegir tu método de pago.", "success");
+};
+
 
 /******************************
  * CARGA INICIAL
