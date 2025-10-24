@@ -4,12 +4,22 @@
 const fmtCOP = v => Number(v || 0).toLocaleString('es-CO');
 const state = { catalogo: [], cart: [] };
 
-// Constantes de integración
-const WHATSAPP_NUMERO = "573332571225"; // Número de WhatsApp
-const WOMPI_BACKEND = "https://script.google.com/macros/s/AKfycbyQzNwHdgGCSGz5dyIHHTn0SNwL0SbIfj_yRW5QXYKid9DJJFLj_djxDX-TGxBockui/exec"; // Apps Script para generar link firmado
+// 🟩 Variables globales
+const WHATSAPP_NUMERO = "573332571225"; // Número de WhatsApp del negocio
+const WOMPI_BACKEND = "https://script.google.com/macros/s/AKfycbyQzNwHdgGCSGz5dyIHHTn0SNwL0SbIfj_yRW5QXYKid9DJJFLj_djxDX-TGxBockui/exec"; // Apps Script backend
+
 
 /******************************
- * INICIALIZACIÓN
+ * FUNCIÓN: ENVIAR WHATSAPP
+ ******************************/
+function enviarWhatsApp(mensaje, numero = WHATSAPP_NUMERO) {
+  // Abre una nueva ventana con el mensaje preformateado
+  window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`, "_blank");
+}
+
+
+/******************************
+ * INICIALIZACIÓN DEL CATÁLOGO
  ******************************/
 async function init() {
   try {
@@ -22,6 +32,7 @@ async function init() {
   }
 }
 
+
 /******************************
  * RENDERIZAR CATÁLOGO
  ******************************/
@@ -30,7 +41,7 @@ function renderCatalog() {
   cont.innerHTML = "";
 
   state.catalogo.forEach(prod => {
-    // Convertir texto de tallas ("23 a 32") a lista de opciones
+    // Convierte "23 a 32" en opciones numéricas
     let tallas = [];
     if (typeof prod.tallas === "string") {
       const match = prod.tallas.match(/(\d+)\s*a\s*(\d+)/);
@@ -66,6 +77,7 @@ function renderCatalog() {
   });
 }
 
+
 /******************************
  * AGREGAR AL CARRITO
  ******************************/
@@ -100,8 +112,9 @@ function addToCart(id) {
   });
 }
 
+
 /******************************
- * CARRITO (Drawer)
+ * CARRITO (Drawer lateral)
  ******************************/
 document.getElementById("btnDrawer").onclick = () => {
   renderDrawerCart();
@@ -162,61 +175,13 @@ function renderDrawerCart() {
   document.getElementById("totalDrawer").textContent = fmtCOP(total);
 }
 
-/******************************
- * NAVEGACIÓN ENTRE VISTAS
- ******************************/
-function show(id) {
-  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
-
-// Botón CONTINUAR → va al formulario
-document.getElementById("btnContinuarPedido").onclick = () => {
-  if (state.cart.length === 0) {
-    Swal.fire("Tu carrito está vacío", "Agrega productos antes de continuar.", "warning");
-    return;
-  }
-
-  const resumen = state.cart.map(p => `${p.qty}× ${p.nombre} (Talla ${p.talla})`).join(" | ");
-  const subtotal = state.cart.reduce((a, b) => a + b.precio * b.qty, 0);
-
-  document.getElementById("resumenProducto").textContent =
-    `🛍 ${resumen} — Subtotal: $${fmtCOP(subtotal)}`;
-
-  show("viewForm");
-  document.getElementById("drawerCarrito").classList.remove("open");
-};
 
 /******************************
- * INTEGRACIONES
+ * FORMULARIO Y PAGO CON WOMPI
  ******************************/
-function generarReferencia(idProducto) {
-  const timestamp = Date.now();
-  return `pedido_${timestamp}_${idProducto}`;
-}
+document.getElementById("btnPagarWompi").onclick = async () => {
 
-async function iniciarPagoWompi(idProducto, monto) {
-  const referencia = generarReferencia(idProducto);
-  try {
-    const response = await fetch(`${WOMPI_BACKEND}?reference=${referencia}&amount=${monto}`);
-    const wompiUrl = await response.text();
-    window.location.href = wompiUrl;
-  } catch (err) {
-    Swal.fire("Error", "No se pudo generar el enlace de pago.", "error");
-    console.error("Error Wompi:", err);
-  }
-}
-
-function enviarWhatsApp(mensaje) {
-  window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(mensaje)}`, "_blank");
-}
-
-/******************************
- * FORMULARIO DE PEDIDO
- ******************************/
-document.getElementById("btnVolver").onclick = () => show("viewCatalog");
-
-document.getElementById("btnConfirmarPedido").onclick = () => {
+  // 🟢 1. Captura los datos del cliente
   const nombre = document.getElementById("nombreCliente").value.trim();
   const telefono = document.getElementById("telefonoCliente").value.trim();
   const direccion = document.getElementById("direccionCliente").value.trim();
@@ -227,31 +192,19 @@ document.getElementById("btnConfirmarPedido").onclick = () => {
     return;
   }
 
-  const total = state.cart.reduce((a, b) => a + b.precio * b.qty, 0);
-  const resumen = state.cart.map(p => `${p.qty}× ${p.nombre} (Talla ${p.talla})`).join("\n");
-  document.getElementById("resumenProducto").textContent =
-    `🧾 Pedido de ${nombre}\n${resumen}\n💰 Total: $${fmtCOP(total)}`;
-
-  document.getElementById("metodosPago").style.display = "flex";
-  document.getElementById("btnConfirmarPedido").disabled = true;
-  Swal.fire("Datos confirmados", "Elige cómo deseas continuar con el pago.", "success");
-};
-
-document.getElementById("btnPagarWompi").onclick = async () => {
-  const nombre = document.getElementById("nombreCliente").value.trim();
-  const telefono = document.getElementById("telefonoCliente").value.trim();
-  const direccion = document.getElementById("direccionCliente").value.trim();
-  const barrio = document.getElementById("barrioCliente").value.trim();
-
+  // 🟢 2. Arma el detalle del pedido
   const total = state.cart.reduce((a, b) => a + b.precio * b.qty, 0);
   const detallePedido = state.cart.map(p => `${p.qty}× ${p.nombre} (Talla ${p.talla})`).join(", ");
-
-  const reference = `pedido_${Date.now()}_${state.cart[0].id}`;
+  
+  // 🟢 3. Genera la referencia única
+  const productIds = state.cart.map(p => p.id).join("-");
+  const reference = `pedido_${Date.now()}_${productIds}`;
 
   try {
-    // 1️⃣ Guardar el pedido en la hoja
-    await fetch(WOMPI_BACKEND + "?saveOrder=true", {
+    // 🟢 4. Envía el pedido al Apps Script
+    await fetch(WOMPI_BACKEND, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         reference,
         nombre,
@@ -263,18 +216,25 @@ document.getElementById("btnPagarWompi").onclick = async () => {
       })
     });
 
-    // 2️⃣ Redirigir a Wompi
+    // 🟢 5. Enviar resumen de pedido por WhatsApp al negocio
+    const mensaje = `🛍️ *Nuevo pedido registrado*\n\nCliente: ${nombre}\n📞 ${telefono}\n📍 ${direccion}, ${barrio}\n\nPedido:\n${detallePedido}\n\n💰 Total: $${fmtCOP(total)}\n🧾 Ref: ${reference}`;
+    enviarWhatsApp(mensaje);
+
+    // 🟢 6. Generar y redirigir al enlace de pago Wompi
     const response = await fetch(`${WOMPI_BACKEND}?reference=${reference}&amount=${total}`);
     const wompiUrl = await response.text();
     window.location.href = wompiUrl;
 
   } catch (error) {
     Swal.fire("Error", "No se pudo registrar el pedido o generar el pago.", "error");
-    console.error("Error:", error);
+    console.error("❌ Error:", error);
   }
 };
 
 
+/******************************
+ * CONFIRMACIÓN POR WHATSAPP (alternativa)
+ ******************************/
 document.getElementById("btnConfirmarWhatsapp").onclick = () => {
   const nombre = document.getElementById("nombreCliente").value.trim();
   const telefono = document.getElementById("telefonoCliente").value.trim();
@@ -287,8 +247,9 @@ document.getElementById("btnConfirmarWhatsapp").onclick = () => {
     state.cart.map(p => `• ${p.qty}× ${p.nombre} (Talla ${p.talla})`).join("\n") +
     `\n\n💰 *Total:* $${fmtCOP(total)}\n\nGracias por tu compra 💐`;
 
-  enviarWhatsApp(mensaje);
+  enviarWhatsApp(mensaje, telefono.startsWith("57") ? telefono : "57" + telefono);
 };
+
 
 /******************************
  * CARGA INICIAL
