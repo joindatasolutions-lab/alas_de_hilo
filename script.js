@@ -6,7 +6,7 @@ const state = { catalogo: [], cart: [] };
 
 // Constantes de integración
 const WHATSAPP_NUMERO = "573332571225"; // Número de WhatsApp
-const WOMPI_BACKEND = "https://script.google.com/macros/s/AKfycbyQzNwHdgGCSGz5dyIHHTn0SNwL0SbIfj_yRW5QXYKid9DJJFLj_djxDX-TGxBockui/exec"; // Apps Script para generar link firmado
+const WOMPI_BACKEND = "https://script.google.com/macros/s/AKfycbyugA-riUX-0YED15RpEAEKzPlAPhS6I9V_EnEhvrz32lqs8R5TJ02aAlfs7nlw_PB2/exec"; // Apps Script para generar link firmado
 
 /******************************
  * INICIALIZACIÓN

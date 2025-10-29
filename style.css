@@ -393,7 +393,7 @@ textarea {
   font-family: inherit;
 }
 
-/* 📱 En móvil, se apilan verticalmente */
+/* 📱 En móvil, se apilan verticalmente*/
 @media (max-width: 600px) {
   .entrega-fecha-hora {
     flex-direction: column;
